@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:latest #образ с докер хаба, нужен чтобы докер создал базу данных посгрес в контейнере
+    container_name: dbeshka
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: parser228
+      POSTGRES_DB: parserhh
+    volumes:
+      - ./data:/data
+    ports:
+      - 5432:5432
+
+  back:
+    build:
+      context: parser/
+    container_name: back_app
+    env_file:
+      - .env
+    ports:
+      - 5252:5252
+    depends_on:
+      - db
+
+  front:
+    build:
+      context: frontend/
+    container_name: front_app
+    ports:
+      - 8000:8000
+    depends_on:
+      - back

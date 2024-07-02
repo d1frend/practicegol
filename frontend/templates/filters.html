@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aclonica&family=Montserrat&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Результат поиска</title>
+    <link rel="stylesheet" href="{{url_for('static', path='/filter.css')}}">
+</head>
+<body>
+    <div class="header">
+        <form action="/" class="home_form">
+            <svg width="31" height="16" viewBox="0 0 31 16" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M.293 7.293a1 1 0 0 0 0 1.414l6.364 6.364a1 1 0 0 0 1.414-1.414L2.414 8l5.657-5.657A1 1 0 0 0 6.657.93zM31 7H1v2h30z" fill="url(#a)"/><defs><linearGradient id="a" x1="31" y1="7.5" x2="1" y2="7.5" gradientUnits="userSpaceOnUse"><stop stop-color="#B17B7B"/><stop offset="1" stop-color="#635050"/></linearGradient></defs></svg>
+            <input type="submit" class="home" value="Вернуться к поиску    ">
+        </form>
+        <h1><b>Результат поиска</b></h1>
+    </div>
+    {%if error == 2%}
+        <span class="error">Вакансий по заданным параметрам не найдено!</span>
+    {%else%}
+        <div class="body">
+            <form class="filters" action="/submit/filters_on" method="post">
+                <label class="filt_name">Фильтры</label>
+                <input class="filt_param" type="text" placeholder="  Регион" name="area">
+                <input class="filt_param" type="text" placeholder="  Навыки" name="skills">
+                <input class="filt_param" type="text" placeholder="  Занятость" name="schedule">
+                <select class="filt_param" type="text" placeholder="  Опыт работы" name="experience">
+                    <option value="">Не имеет значения</option>
+                    <option value="не требуется">не требуется</option>
+                    <option value="1–3 года">1–3 года</option>
+                    <option value="3–6 лет">3–6 лет</option>
+                    <option value="более 6 лет">более 6 лет</option>
+                </select>
+                <input class="filt_param" type="submit" value="Применить">
+            </form>
+            {%if error == 1%}
+                <div class="list">
+                    {%for i in data[(values_page-1)*5:values_page*5]%}
+                    <div class="card">
+                        <span>{{i["name"]}}</span>
+                        <div class="params">
+                            <label class="char"><b>Регион:</b> {{i["area"]}} </label>
+                            <label class="char"><b>Уровень дохода:</b> {{i["salary"]}}</label>
+                            <label class="char"><b>Навыки:</b> {{i["skills"]}}</label>
+                            <label class="char"><b>Занятость:</b> {{i["schedule"]}}</label>
+                            <label class="char"><b>Опыт работы:</b> {{i["experience"]}}</label>
+                        </div>
+                    </div>
+                    {%endfor%}
+                    <form class="page" action="/submit/page" method="post">
+                        <label class="l_page">Страница:</label>
+                        <div class="navigation">
+                            {%for i in range(max_page)%}
+                                {% if i + 1 == values_page%}
+                                    <input class="checked" type="submit" value={{i+1}} name="value_page">
+                                {% else %}
+                                    <input class="but_page" type="submit" value={{i+1}} name="value_page">
+                                {%endif%}
+                            {%endfor%}
+                        </div>
+                    </form>
+                </div>
+            {%else%}
+                <span class="error">Ваканасии по заданным фильтрам не найдены!</span>
+            {%endif%}
+        </div>
+    {%endif%}
+</body>
+</html>

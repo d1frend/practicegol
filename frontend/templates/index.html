@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aclonica&family=Montserrat&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск Вакансий</title>
+    <link rel="stylesheet" href="{{url_for('static', path='/style.css')}}">
+</head>
+<body>
+    <div class="header">
+        <h1>Поиск вакансий</h1>
+    </div>
+    <form action="/submit/vacancies_pars" class="body" method="post">
+        <input type="text" class=" search" placeholder=" Введите название должности" name="name">
+        <div class="send">
+            <input type="number" class="salary" placeholder=" Введите уровень дохода" name="salary">
+            <div class="otprav">
+                <input type="submit" class="button" placeholder="" value='    Найти'  >
+                <svg width="72" height="23" viewBox="0 0 72 23" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M71.058 12.56a1.5 1.5 0 0 0 0-2.12L61.512.892a1.5 1.5 0 1 0-2.121 2.122l8.485 8.485-8.485 8.485a1.5 1.5 0 1 0 2.121 2.122zM-.002 13h70v-3h-70z" fill="url(#a)"/><defs><linearGradient id="a" x1="-.002" y1="12" x2="69.998" y2="12" gradientUnits="userSpaceOnUse"><stop stop-color="#B17B7B"/><stop offset="1" stop-color="#635050"/></linearGradient></defs></svg>
+            </div>
+        </div>
+        
+    </form>
+</body>
+</html>
