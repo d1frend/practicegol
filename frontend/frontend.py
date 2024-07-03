@@ -14,7 +14,7 @@ st_abs_file_path_templates = os.path.join(script_dir, "templates/")
 
 app2.mount("/static", StaticFiles(directory=st_abs_file_path), name="static")
 templates = Jinja2Templates(directory=st_abs_file_path_templates)
-"""это спизжено, чисто чтобы запускался css и html"""
+"""чисто чтобы запускался css и html"""
 
 
 @app2.get('/', response_class=HTMLResponse)

@@ -16,14 +16,14 @@ def get_links(text: str, salary: str = None):
     ua = fake_useragent.UserAgent()
     data = requests.get(
         url=f"https://hh.ru/search/vacancy?text={text}&area=113&page=0&salary={salary}",
-        headers={"user-agent": ua.random}
+        headers={"user-agent": ua.random}#чтобы не банило свой юзер
     )
-    data.raise_for_status()
+    data.raise_for_status()#проверка статуса кода, для того чтобы дальше не работало при ошибке
     soup = BeautifulSoup(data.content, "lxml")
     try:
         page_count = int(
             soup.find("div", attrs={"class": "pager"}).find_all("span", recursive=False)[-1].find("a").find(
-                "span").text)
+                "span").text)#количество страниц с вакансиями
     except:
         return
     c = 0
@@ -40,8 +40,8 @@ def get_links(text: str, salary: str = None):
                 if '/vacancy/' in f"{link.attrs['href'].split('?')[0]}":
                     linki.append(f"{link.attrs['href'].split('?')[0]}")
                     c += 1
-                    if c == 20:
-                        return linki
+                    if c == 20:#чтобы спарсить 20 ссылок
+                        return linki#забрал все ссылки на вакансии
 
         except Exception as e:
             print(f"{e}")
@@ -103,14 +103,14 @@ def get_vacancies(link):
         except:
             address = ""
             vacansii.address = address
-        session.add(vacansii)
-        session.commit()#комит в бд
+        session.add(vacansii)#комит в бд
+        session.commit()#и его сохранение
 
 
 #роут ввода данных для парсинга
 @app.get("/parsing")
 def start(name: str, salary: str = None):
-    data = {"items": [], "error": 1}#словарик для того, чтобы передать вакансии с базы данных на фронт (на сво)
+    data = {"items": [], "error": 1}#словарик для того, чтобы передать вакансии с базы данных на фронт
     create_tables()#дропаю и сразу создаю бд перед началом парсинга
     try:
         for i in get_links(name, salary):
@@ -143,7 +143,7 @@ def start(name: str, salary: str = None):
 #фильтрация
 def filtid(serch: str, colum: str):
     with session_factory() as session:
-        if colum == "skills":#ДЛЯ СЕБЯ
+        if colum == "skills":#ДЛЯ СЕБЯ создал, чтобы понимать, что выводить из бд после фильтрации
             normvalues = session.query(Vacancies.id, Vacancies.skills).all()
         elif colum == "schedule":
             normvalues = session.query(Vacancies.id, Vacancies.schedule).all()
@@ -160,14 +160,14 @@ def filtid(serch: str, colum: str):
             else:
                 if serch in i[1]:
                     normid.append(i[0])
-        return normid
+        return normid#нашел нужные айдишники с фильтрации
 
 
 @app.get("/filt")
 def filter(area: str = None, skills: str = None, schedule: str = None, experience: str = None):
     correct_id = set()
     correct_id_list = []
-    data = {"items": [], "error": 1}
+    data = {"items": [], "error": 1}#error 1 значит все норм и вывожу всё страницу на фронте, error 2 если на начальной странице фигню ввел, и 3 если в фильтрах фигню ввел
     count = 0
     with session_factory() as session:
         if area:
@@ -229,28 +229,3 @@ def filter(area: str = None, skills: str = None, schedule: str = None, experienc
         data["error"] = 3
 
     return data
-
-
-
-"""    with session_factory() as session:
-        vacs = session.query(Vacancies).filter(Vacancies.id.in_(list(correct_id))).all()
-        for vac in vacs:
-            value_area = ""
-            if vac.region:
-                value_area = vac.region
-            else:
-                value_area = vac.address
-            data["items"].append(
-                {
-                    "name": vac.name,
-                    "salary": vac.salary,
-                    "skills": vac.skills,
-                    "schedule": vac.schedule,
-                    "experience": vac.experience,
-                    "area": value_area,
-                }
-            )
-        return data"""
-
-
-
